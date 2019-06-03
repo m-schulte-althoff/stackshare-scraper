@@ -1,0 +1,21 @@
+#!/bin/bash
+now=`date +"%m_%d_%Y"`
+mkdir "Stackshare_Scrape_$now"
+cp s1.py Stackshare_Scrape_$now
+cp s2.py Stackshare_Scrape_$now
+cd Stackshare_Scrape_$now
+python s1.py
+python s2.py
+cd ..
+
+
+
+# start with 
+# 0 0 1,15 * *	./bash.sh < load_data.txt
+ 
+
+# vorinstallieren (!)
+#ospath
+#beautifulsoup
+#requestpackage
+#openpyxl -> s3.py

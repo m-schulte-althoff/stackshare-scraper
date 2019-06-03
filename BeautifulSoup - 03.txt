@@ -1,0 +1,42 @@
+from openpyxl import load_workbook
+from bs4 import BeautifulSoup
+
+fileLinks = open("./Links.txt", "rb")
+lines = fileLinks.readlines()
+links = lines[0].rsplit(";")
+wb = load_workbook("Output.xlsx")
+print("WB loaded")
+index = 0
+
+for link in links:
+    name = link.rsplit("/", 1)[1]
+    wb["Tabelle1"].cell(row=index+2, column=1).value = name
+    file = open(name+".txt")
+    soup = BeautifulSoup(file, "html.parser")
+    appDataList = []
+    utilsList = []
+    devOpsList = []
+    businessList = []
+    for element in soup.find_all("div", class_="application_and_data"):
+        for stack in element.findChildren("a", class_="stack-service-name-under"):
+            appDataList.append(stack.text)
+    for element in soup.find_all("div", class_="utilities"):
+        for stack in element.findChildren("a", class_="stack-service-name-under"):
+            utilsList.append(stack.text)
+    for element in soup.find_all("div", class_="devops"):
+        for stack in element.findChildren("a", class_="stack-service-name-under"):
+            devOpsList.append(stack.text)
+    for element in soup.find_all("div", class_="business_tools"):
+        for stack in element.findChildren("a", class_="stack-service-name-under"):
+            businessList.append(stack.text)
+    wb["Tabelle1"].cell(row=index+2, column=2).value = ';'.join(appDataList)
+    wb["Tabelle1"].cell(row=index + 2, column=3).value = ';'.join(utilsList)
+    wb["Tabelle1"].cell(row=index + 2, column=4).value = ';'.join(devOpsList)
+    wb["Tabelle1"].cell(row=index + 2, column=5).value = ';'.join(businessList)
+    index += 1
+    print(str(index+1)+"/"+str(len(links)))
+wb.save("Output2.xlsx")
+wb.close()
+
+## Hierfür brauchste bereits eine Output.xlsx im Ordner, diese Variante hier exportiert alle Kategorien separat in 4 Spalten auf dem ersten Worksheet## 
+

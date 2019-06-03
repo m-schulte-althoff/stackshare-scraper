@@ -1,0 +1,20 @@
+from bs4 import BeautifulSoup
+import requests
+
+s = requests.Session()
+s.headers['user-agent'] = "Mozilla/5.0"
+s.get("https://stackshare.io/stacks/load-more/")
+
+for i in range(1, 4500):
+    r = s.post("https://stackshare.io/stacks/load-more/", data={'page': i})
+    soup = BeautifulSoup(r.content, 'html.parser')
+    file = open("Links.txt", "a")
+    for result in soup.find_all(class_='hint--top'):
+        if result.has_attr("data-hint"):
+            if result.get("data-hint") != "Verified Stack":
+                file.write(";https://stackshare.io"+result.get("href"))
+    print(i)
+
+
+
+## Du solltest vermutlich eine Links.txt bereits im gleichen Ordner wie diese Datei haben, außerdem bezieht das Skript planweise nur "Verified Stacks" mit ein, das müsstest du jenachdem anpassen, ich meine aktuell haut das mit den 4500 Seiten ganz gut hin, aber kann sein dass du da mit der Zeit noch was anfügen musst was dann anhand der response ausliest ob neue Stacks geladen wurden oder nicht ##
